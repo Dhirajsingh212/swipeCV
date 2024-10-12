@@ -5,7 +5,6 @@ import Footer from '@/components/Footer'
 import Header from '@/components/header'
 import Hero from '@/components/Hero'
 import Pricing from '@/components/Pricing'
-import Link from 'next/link'
 
 export default function LandingPage() {
   return (
