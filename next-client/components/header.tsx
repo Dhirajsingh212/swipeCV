@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import NavLink from './NavLink'
+import { SignInButton, SignedIn, SignedOut, UserButton } from '@clerk/nextjs'
 
 const Header = () => {
   const [theme, setTheme] = useState('light')
@@ -44,6 +45,14 @@ const Header = () => {
           >
             {theme === 'light' ? '🌙' : '☀️'}
           </Button>
+          <SignedOut>
+            <Button className='bg-slate-900 text-white hover:bg-slate-700'>
+              <SignInButton />
+            </Button>
+          </SignedOut>
+          <SignedIn>
+            <UserButton />
+          </SignedIn>
           <Button asChild>
             <Link href='/signup'>Get Started</Link>
           </Button>

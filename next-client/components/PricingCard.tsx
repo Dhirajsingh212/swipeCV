@@ -31,7 +31,7 @@ export default function PricingCard({
               /mo
             </span>
           </div>
-          <ul className='mb-8 space-y-2'>
+          <ul className='mb-8 h-40 w-60 space-y-2'>
             {features.map((feature: any, index: any) => (
               <li
                 key={index}

@@ -40,7 +40,7 @@ const Hero = () => {
             size='lg'
             className='transform rounded-full bg-gradient-to-r from-teal-500 to-cyan-600 px-8 py-4 text-lg font-bold text-white transition duration-300 ease-in-out hover:scale-105 hover:from-teal-600 hover:to-cyan-700'
           >
-            <Link href='/demo'>Start Swiping Resumes</Link>
+            <Link href='/demo'>Create your own form.</Link>
           </Button>
         </motion.div>
       </section>
@@ -84,7 +84,7 @@ const Hero = () => {
             <Safari
               url='magicui.design'
               className='size-1/2'
-              src='https://i.pinimg.com/originals/87/15/41/871541e0eacbb261b24abd74bc7d9083.gif'
+              src='https://i.pinimg.com/originals/32/91/57/3291574b94400a80a476978fe9e3572f.gif'
             ></Safari>
           </div>
         </div>

@@ -9,37 +9,34 @@ const Pricing = () => {
         </h2>
         <div className='flex flex-col items-center justify-center gap-8 md:flex-row md:items-stretch'>
           <PricingCard
-            title='Ripple'
-            price='$29'
+            title='Basic'
+            price='free'
             features={[
-              '5 Projects',
-              '10GB Storage',
-              'Basic Support',
-              '1 Team Member'
+              'Create 1 Custom Form',
+              'ATS Scoring for up to 50 Resumes',
+              'Swipe Review Feature'
             ]}
             btnText='Start Small'
             highlighted={false}
           />
           <PricingCard
-            title='Tsunami'
-            price='$99'
+            title='Pro'
+            price='$29'
             features={[
-              'Unlimited Projects',
-              '1TB Storage',
-              '24/7 Priority Support',
-              'Unlimited Team Members'
+              'Create up to 5 Custom Forms',
+              'ATS Scoring for up to 500 Resumes',
+              'Advanced Swipe Filtering'
             ]}
             btnText='Make Waves'
             highlighted={true}
           />
           <PricingCard
-            title='Ocean'
+            title='Enterprise'
             price='Custom'
             features={[
-              'Everything in Tsunami',
-              'Custom Integrations',
-              'Dedicated Account Manager',
-              'Advanced Analytics'
+              'Unlimited Custom Forms',
+              'ATS Scoring for Unlimited Resumes',
+              'Customizable Swipe Workflows'
             ]}
             btnText='Contact Us'
             highlighted={false}
