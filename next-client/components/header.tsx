@@ -54,7 +54,7 @@ const Header = () => {
             <UserButton />
           </SignedIn>
           <Button asChild>
-            <Link href='/signup'>Get Started</Link>
+            <Link href='/home'>Get Started</Link>
           </Button>
         </div>
       </nav>

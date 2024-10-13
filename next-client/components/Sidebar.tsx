@@ -1,134 +1,106 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
-import {
-  Home,
-  Settings,
-  Mail,
-  Users,
-  HelpCircle,
-  Menu,
-  ChevronLeft
-} from 'lucide-react'
-import Link from 'next/link'
+import { CreativeCommons, Home, Mail, Menu, Settings, X } from 'lucide-react'
 import { ThemeToggle } from './theme-toggle'
-import { Button } from './ui/button'
-
-const menuItems = [
-  { id: 1, label: 'Home', icon: Home, link: '/' },
-  { id: 2, label: 'Settings', icon: Settings, link: '/settings' },
-  { id: 3, label: 'Messages', icon: Mail, link: '/messages' },
-  { id: 4, label: 'Users', icon: Users, link: '/users' },
-  { id: 5, label: 'Help', icon: HelpCircle, link: '/help' }
-]
+import Link from 'next/link'
 
 export default function Sidebar() {
-  const [isCollapsed, setIsCollapsed] = useState(false)
-  const [isMobile, setIsMobile] = useState(false)
-
-  useEffect(() => {
-    const checkScreenSize = () => {
-      setIsMobile(window.innerWidth < 768)
-      if (window.innerWidth < 768) {
-        setIsCollapsed(true)
-      }
+  const menuItems = [
+    {
+      icon: <Home className='h-6 w-6' />,
+      text: 'Home',
+      color: 'text-teal-600 dark:text-teal-400',
+      link: '/home'
+    },
+    {
+      icon: <CreativeCommons className='h-6 w-6' />,
+      text: 'Create',
+      color: 'text-cyan-600 dark:text-cyan-400',
+      link: '/create'
+    },
+    {
+      icon: <Settings className='h-6 w-6' />,
+      text: 'Settings',
+      color: 'text-blue-600 dark:text-blue-400'
     }
+  ]
 
-    checkScreenSize()
-    window.addEventListener('resize', checkScreenSize)
-    return () => window.removeEventListener('resize', checkScreenSize)
-  }, [])
+  const toggleSidebar = () => {
+    const sidebar = document.getElementById('sidebar')
+    const toggleOpen = document.getElementById('toggle-open')
+    const toggleClose = document.getElementById('toggle-close')
 
-  const toggleSidebar = () => setIsCollapsed(!isCollapsed)
-
-  const sidebarVariants = {
-    expanded: { width: '240px' },
-    collapsed: { width: '72px' }
+    if (sidebar && toggleOpen && toggleClose) {
+      sidebar.classList.toggle('-translate-x-full')
+      toggleOpen.classList.toggle('hidden')
+      toggleClose.classList.toggle('hidden')
+    }
   }
 
   return (
-    <div className='flex h-screen bg-gray-100 shadow-2xl backdrop-blur-3xl dark:bg-gray-900'>
-      <motion.div
-        className='fixed inset-y-0 left-0 z-30 flex flex-col bg-white shadow-lg dark:bg-gray-800'
-        variants={sidebarVariants}
-        animate={isCollapsed ? 'collapsed' : 'expanded'}
-        transition={{ duration: 0.3 }}
+    <div className='relative min-h-screen bg-gradient-to-br from-teal-50 via-cyan-100 to-sky-200 transition-colors duration-500 dark:from-gray-900 dark:via-blue-900 dark:to-cyan-900'>
+      {/* Mobile toggle button */}
+      <button
+        id='toggle-open'
+        className='fixed left-4 top-4 z-20 rounded-full bg-white p-2 text-teal-600 shadow-lg transition-all duration-300 hover:bg-teal-50 dark:bg-gray-800 dark:text-teal-400 dark:hover:bg-gray-700 lg:hidden'
+        onClick={toggleSidebar}
+        aria-label='Open Sidebar'
       >
-        <div className='flex h-16 items-center justify-between bg-primary px-4 dark:bg-gray-700'>
-          {!isCollapsed && (
-            <h1 className='truncate text-xl font-bold text-white'>My App</h1>
-          )}
-          <button
-            onClick={toggleSidebar}
-            className='rounded-md p-2 text-white hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white'
-            aria-label={isCollapsed ? 'Expand Sidebar' : 'Collapse Sidebar'}
-          >
-            <ChevronLeft
-              size={24}
-              className={`transform transition-transform duration-300 ${
-                isCollapsed ? 'rotate-180' : ''
-              }`}
-            />
-          </button>
-        </div>
-        <nav className='flex-1 overflow-y-auto py-4'>
-          <ul className='space-y-2 px-2'>
-            {menuItems.map(item => (
-              <li key={item.id}>
-                <Link
-                  href={item.link}
-                  className={`group flex items-center rounded-lg p-2 text-gray-700 transition-all duration-200 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700 ${
-                    isCollapsed ? 'justify-center' : 'justify-start'
-                  }`}
+        <Menu className='h-6 w-6' />
+      </button>
+
+      {/* Sidebar */}
+      <div
+        id='sidebar'
+        className='fixed left-0 top-0 z-10 h-full w-64 -translate-x-full overflow-y-auto bg-white/80 backdrop-blur-lg transition-transform duration-300 ease-in-out dark:bg-gray-800/80 lg:translate-x-0'
+      >
+        <button
+          id='toggle-close'
+          className='absolute right-4 top-5 hidden rounded-full bg-teal-100 p-2 text-teal-600 transition-colors hover:bg-teal-200 dark:bg-gray-700 dark:text-teal-400 dark:hover:bg-gray-600 lg:hidden'
+          onClick={toggleSidebar}
+          aria-label='Close Sidebar'
+        >
+          <X className='h-6 w-6' />
+        </button>
+
+        <nav className='p-4'>
+          <div className='mb-8 flex flex-row items-center justify-between'>
+            <Link
+              href='/'
+              className='text-2xl font-bold text-teal-600 dark:text-teal-400'
+            >
+              SwipeCV
+            </Link>
+            <div className='p-2 pr-10 max-lg:rounded-full max-lg:bg-teal-100 max-lg:dark:bg-gray-700 lg:pr-0'>
+              <ThemeToggle />
+            </div>
+          </div>
+          <ul className='space-y-4'>
+            {menuItems.map((item, index) => (
+              <li key={index}>
+                <a
+                  href='#'
+                  className='flex items-center space-x-4 rounded-lg bg-white/50 p-3 transition-all duration-200 hover:bg-white/80 hover:shadow-md dark:bg-gray-700/50 dark:hover:bg-gray-700/80'
                 >
-                  <item.icon
-                    className={`h-6 w-6 ${isCollapsed ? '' : 'mr-3'} text-gray-500 transition-colors duration-200 group-hover:text-primary dark:text-gray-400`}
-                  />
-                  {!isCollapsed && (
-                    <span className='font-medium transition-colors duration-200 group-hover:text-primary'>
-                      {item.label}
-                    </span>
-                  )}
-                </Link>
+                  <span
+                    className={`rounded-full bg-teal-100 p-2 ${item.color} dark:bg-gray-600`}
+                  >
+                    {item.icon}
+                  </span>
+                  <span className='font-medium text-gray-800 dark:text-gray-200'>
+                    {item.text}
+                  </span>
+                </a>
               </li>
             ))}
-            <li
-              className={`group flex items-center rounded-lg p-2 text-gray-700 transition-all duration-200 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700 ${
-                isCollapsed ? 'justify-center' : 'justify-start'
-              }`}
-            >
-              <ThemeToggle className='py-0 pl-0 hover:bg-inherit'>
-                {!isCollapsed && (
-                  <span className='font-medium transition-colors duration-200 group-hover:text-primary'>
-                    Toggle theme
-                  </span>
-                )}
-              </ThemeToggle>
-            </li>
           </ul>
         </nav>
-        {!isCollapsed && (
-          <div className='border-t border-gray-200 p-4 dark:border-gray-700'>
-            <p className='text-sm text-gray-500 dark:text-gray-400'>
-              © 2023 My App
-            </p>
-          </div>
-        )}
-      </motion.div>
-
-      {/* Mobile toggle button */}
-      {isMobile && (
-        <button
-          className='fixed left-4 top-4 z-40 rounded-full bg-white p-2 shadow-lg transition-all duration-300 ease-in-out hover:scale-110 focus:outline-none focus:ring-2 focus:ring-primary dark:bg-gray-800'
-          onClick={toggleSidebar}
-          aria-label={isCollapsed ? 'Expand Sidebar' : 'Collapse Sidebar'}
-        >
-          <Menu size={24} />
-        </button>
-      )}
-
-      {/* Main content */}
+        <div className='absolute bottom-0 left-0 right-0 p-4'>
+          <p className='text-center text-sm text-gray-500 dark:text-gray-400'>
+            © {new Date().getFullYear()} SwipeCV
+          </p>
+        </div>
+      </div>
     </div>
   )
 }
