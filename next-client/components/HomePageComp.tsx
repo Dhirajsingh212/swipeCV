@@ -8,7 +8,6 @@ import { useState } from 'react'
 
 export default function HomePageComp({ forms }: { forms: any[] }) {
   const [searchTerm, setSearchTerm] = useState('')
-  console.log(forms)
 
   const filteredForms = forms.filter(form =>
     form.formTitle.toLowerCase().includes(searchTerm.toLowerCase())
@@ -67,7 +66,7 @@ export default function HomePageComp({ forms }: { forms: any[] }) {
           {filteredForms.length > 0 &&
             filteredForms.map((form, index) => (
               <motion.div
-                key={form.id}
+                key={index}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 * index }}

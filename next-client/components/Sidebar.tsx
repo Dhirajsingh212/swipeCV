@@ -39,7 +39,7 @@ export default function Sidebar() {
   }
 
   return (
-    <div className='relative min-h-screen bg-gradient-to-br from-teal-50 via-cyan-100 to-sky-200 transition-colors duration-500 dark:from-gray-900 dark:via-blue-900 dark:to-cyan-900'>
+    <div className='relative min-h-screen bg-gradient-to-br from-teal-50 via-cyan-100 to-sky-200 shadow-2xl transition-colors duration-500 dark:from-gray-900 dark:via-blue-900 dark:to-cyan-900'>
       <button
         id='toggle-open'
         className='fixed left-4 top-4 z-20 rounded-full bg-white p-2 text-teal-600 shadow-lg transition-all duration-300 hover:bg-teal-50 dark:bg-gray-800 dark:text-teal-400 dark:hover:bg-gray-700 lg:hidden'
