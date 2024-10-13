@@ -1,26 +1,13 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
-import Link from 'next/link'
-import { useEffect, useState } from 'react'
-import NavLink from './NavLink'
 import { SignInButton, SignedIn, SignedOut, UserButton } from '@clerk/nextjs'
+import { useTheme } from 'next-themes'
+import Link from 'next/link'
+import NavLink from './NavLink'
 
 const Header = () => {
-  const [theme, setTheme] = useState('light')
-
-  useEffect(() => {
-    const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
-    setTheme(isDarkMode ? 'dark' : 'light')
-  }, [])
-
-  const toggleTheme = () => {
-    setTheme(prevTheme => (prevTheme === 'light' ? 'dark' : 'light'))
-  }
-
-  useEffect(() => {
-    document.documentElement.classList.toggle('dark', theme === 'dark')
-  }, [theme])
+  const { setTheme, resolvedTheme } = useTheme()
 
   return (
     <header className='container mx-auto px-6 py-4'>
@@ -38,12 +25,14 @@ const Header = () => {
         </div>
         <div className='flex items-center space-x-4'>
           <Button
-            onClick={toggleTheme}
+            onClick={() => {
+              setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')
+            }}
             variant='outline'
             size='icon'
             className='rounded-full'
           >
-            {theme === 'light' ? '🌙' : '☀️'}
+            {resolvedTheme === 'light' ? '🌙' : '☀️'}
           </Button>
           <SignedOut>
             <Button className='bg-slate-900 text-white hover:bg-slate-700'>
