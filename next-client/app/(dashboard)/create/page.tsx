@@ -1,20 +1,12 @@
 'use client'
 
 import { saveFieldsToDB } from '@/actions/form'
+import { Field, FieldType } from '@/types/types'
 import { useAuth } from '@clerk/nextjs'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Calendar, CheckSquare, Image, List, Plus, Type, X } from 'lucide-react'
 import { useState } from 'react'
 import toast from 'react-hot-toast'
-
-type FieldType = 'text' | 'multipleChoice' | 'checkbox' | 'date' | 'file'
-
-interface Field {
-  id: string
-  type: FieldType
-  label: string
-  options?: string[]
-}
 
 export default function CreateForm() {
   const [formTitle, setFormTitle] = useState('')

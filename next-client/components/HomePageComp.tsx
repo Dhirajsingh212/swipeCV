@@ -1,5 +1,6 @@
 'use client'
 
+import { format } from 'date-fns'
 import { motion } from 'framer-motion'
 import { Copy, Edit, Plus, Search, Trash2 } from 'lucide-react'
 import Link from 'next/link'
@@ -76,7 +77,8 @@ export default function HomePageComp({ forms }: { forms: any[] }) {
                   {form.formTitle}
                 </h2>
                 <p className='mb-4 text-sm text-gray-600 dark:text-gray-300'>
-                  Responses: {form.responses || 0} | Last edited: {}
+                  Responses: {form.responses || 0} | Created At:
+                  {format(new Date(form.createdAt), 'dd MMMM yyyy')}
                 </p>
                 <div className='flex space-x-2'>
                   <motion.button
@@ -125,7 +127,7 @@ export default function HomePageComp({ forms }: { forms: any[] }) {
             </p>
             {!searchTerm && (
               <Link
-                href='/create-form'
+                href='/create'
                 className='group mt-4 inline-flex items-center rounded-lg bg-teal-600 px-4 py-2 text-white transition-all duration-300 hover:bg-teal-700 dark:bg-teal-500 dark:hover:bg-teal-600'
               >
                 <Plus className='mr-2 h-5 w-5 transition-transform duration-300 group-hover:rotate-90' />
