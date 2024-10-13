@@ -1,6 +1,6 @@
 'use server'
 import prisma from '@/lib/prisma'
-import { Field } from '@/types/types'
+import { Field, UserForms } from '@/types/types'
 
 export async function saveFieldsToDB(
   fields: Field[],
@@ -55,7 +55,7 @@ export async function saveFieldsToDB(
   }
 }
 
-export async function getUserForms(userId: string) {
+export async function getUserForms(userId: string): Promise<UserForms | null> {
   try {
     const userForms = await prisma.user.findFirst({
       where: {
@@ -70,10 +70,9 @@ export async function getUserForms(userId: string) {
         }
       }
     })
-
     return userForms
   } catch (err) {
     console.log(err)
-    return []
+    return null
   }
 }

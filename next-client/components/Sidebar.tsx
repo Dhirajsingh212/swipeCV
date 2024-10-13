@@ -1,8 +1,8 @@
 'use client'
 
-import { CreativeCommons, Home, Mail, Menu, Settings, X } from 'lucide-react'
-import { ThemeToggle } from './theme-toggle'
+import { Home, Menu, PlusCircleIcon, Settings, X } from 'lucide-react'
 import Link from 'next/link'
+import { ThemeToggle } from './theme-toggle'
 
 export default function Sidebar() {
   const menuItems = [
@@ -13,7 +13,7 @@ export default function Sidebar() {
       link: '/home'
     },
     {
-      icon: <CreativeCommons className='h-6 w-6' />,
+      icon: <PlusCircleIcon className='h-6 w-6' />,
       text: 'Create',
       color: 'text-cyan-600 dark:text-cyan-400',
       link: '/create'

@@ -4,7 +4,7 @@ import { auth } from '@clerk/nextjs/server'
 
 const Homepage = async () => {
   const { userId } = auth()
-  const userFormData: any = await getUserForms(userId || '')
+  const userFormData = await getUserForms(userId || '')
   return <>{userFormData && <HomePageComp forms={userFormData.forms} />}</>
 }
 

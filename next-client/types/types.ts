@@ -6,3 +6,12 @@ export interface Field {
   label: string
   options?: string[]
 }
+
+export interface Form {
+  createdAt: Date
+  formTitle: string
+}
+
+export interface UserForms {
+  forms: Form[]
+}
