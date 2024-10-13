@@ -40,7 +40,6 @@ export default function Sidebar() {
 
   return (
     <div className='relative min-h-screen bg-gradient-to-br from-teal-50 via-cyan-100 to-sky-200 transition-colors duration-500 dark:from-gray-900 dark:via-blue-900 dark:to-cyan-900'>
-      {/* Mobile toggle button */}
       <button
         id='toggle-open'
         className='fixed left-4 top-4 z-20 rounded-full bg-white p-2 text-teal-600 shadow-lg transition-all duration-300 hover:bg-teal-50 dark:bg-gray-800 dark:text-teal-400 dark:hover:bg-gray-700 lg:hidden'
@@ -50,7 +49,6 @@ export default function Sidebar() {
         <Menu className='h-6 w-6' />
       </button>
 
-      {/* Sidebar */}
       <div
         id='sidebar'
         className='fixed left-0 top-0 z-10 h-full w-64 -translate-x-full overflow-y-auto bg-white/80 backdrop-blur-lg transition-transform duration-300 ease-in-out dark:bg-gray-800/80 lg:translate-x-0'
