@@ -3,41 +3,25 @@
 import { Plus, Edit, Trash2, Copy, Search } from 'lucide-react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { getUserForms } from '@/actions/form'
+import { useAuth } from '@clerk/nextjs'
 
 export default function HomePage() {
   const [searchTerm, setSearchTerm] = useState('')
+  const [forms, setForms] = useState<any[]>([])
+  const { userId } = useAuth()
 
-  // This would typically come from an API or database
-  const forms = [
-    {
-      id: 1,
-      title: 'Customer Feedback',
-      responses: 124,
-      lastEdited: '2023-05-15'
-    },
-    {
-      id: 2,
-      title: 'Event Registration',
-      responses: 89,
-      lastEdited: '2023-05-10'
-    },
-    {
-      id: 3,
-      title: 'Employee Survey',
-      responses: 56,
-      lastEdited: '2023-05-08'
-    },
-    {
-      id: 4,
-      title: 'Product Order Form',
-      responses: 210,
-      lastEdited: '2023-05-01'
+  useEffect(() => {
+    async function fetchData() {
+      const userFormData: any = await getUserForms(userId || '')
+      setForms(userFormData.forms || [])
     }
-  ]
+    fetchData()
+  }, [])
 
   const filteredForms = forms.filter(form =>
-    form.title.toLowerCase().includes(searchTerm.toLowerCase())
+    form.formTitle.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
   return (
@@ -78,7 +62,7 @@ export default function HomePage() {
               placeholder='Search forms...'
               value={searchTerm}
               onChange={e => setSearchTerm(e.target.value)}
-              className='w-full rounded-lg border border-gray-300 bg-white px-4 py-2 pl-10 text-gray-800 shadow-sm transition-all duration-300 focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-500 dark:border-none dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:focus:border-teal-400 dark:focus:ring-teal-400'
+              className='w-full rounded-lg border border-gray-300 bg-white px-4 py-2 pl-10 text-gray-800 shadow-sm transition-all duration-300 focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-500 dark:border-none dark:border-gray-600 dark:bg-card dark:text-white dark:focus:border-teal-400 dark:focus:ring-teal-400'
             />
             <Search className='absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400' />
           </div>
@@ -99,7 +83,7 @@ export default function HomePage() {
               className='group rounded-lg bg-card p-6 shadow-md transition-all duration-300 hover:shadow-lg'
             >
               <h2 className='mb-2 text-xl font-semibold text-gray-800 dark:text-white'>
-                {form.title}
+                {form.formTitle}
               </h2>
               <p className='mb-4 text-sm text-gray-600 dark:text-gray-300'>
                 Responses: {form.responses} | Last edited: {form.lastEdited}

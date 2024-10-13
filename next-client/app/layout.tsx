@@ -1,15 +1,9 @@
+import Providers from '@/components/providers'
 import { cn } from '@/lib/utils'
+import { ClerkProvider } from '@clerk/nextjs'
 import type { Metadata } from 'next'
 import { Inter, Playfair_Display } from 'next/font/google'
 import localFont from 'next/font/local'
-import {
-  ClerkProvider,
-  SignInButton,
-  SignedIn,
-  SignedOut,
-  UserButton
-} from '@clerk/nextjs'
-import Providers from '@/components/providers'
 
 import './globals.css'
 

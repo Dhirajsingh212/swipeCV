@@ -21,7 +21,8 @@ export default function Sidebar() {
     {
       icon: <Settings className='h-6 w-6' />,
       text: 'Settings',
-      color: 'text-blue-600 dark:text-blue-400'
+      color: 'text-blue-600 dark:text-blue-400',
+      link: '/settings'
     }
   ]
 
@@ -78,8 +79,8 @@ export default function Sidebar() {
           <ul className='space-y-4'>
             {menuItems.map((item, index) => (
               <li key={index}>
-                <a
-                  href='#'
+                <Link
+                  href={item.link}
                   className='flex items-center space-x-4 rounded-lg bg-white/50 p-3 transition-all duration-200 hover:bg-white/80 hover:shadow-md dark:bg-gray-700/50 dark:hover:bg-gray-700/80'
                 >
                   <span
@@ -90,7 +91,7 @@ export default function Sidebar() {
                   <span className='font-medium text-gray-800 dark:text-gray-200'>
                     {item.text}
                   </span>
-                </a>
+                </Link>
               </li>
             ))}
           </ul>
