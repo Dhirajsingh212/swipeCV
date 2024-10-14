@@ -5,9 +5,19 @@ import { SignInButton, SignedIn, SignedOut, UserButton } from '@clerk/nextjs'
 import { useTheme } from 'next-themes'
 import Link from 'next/link'
 import NavLink from './NavLink'
+import { useEffect, useState } from 'react'
 
 const Header = () => {
   const { setTheme, resolvedTheme } = useTheme()
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  if (!mounted) {
+    return null
+  }
 
   return (
     <header className='container mx-auto px-6 py-4'>

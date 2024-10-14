@@ -263,6 +263,7 @@ export default function CreateForm() {
                 }
                 await saveFieldsToDB(fields, formTitle, userId || '')
                 setFields([])
+                setFormTitle('')
                 toast.success('form added successfully')
               } catch (err) {
                 console.log(err)

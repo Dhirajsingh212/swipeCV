@@ -76,3 +76,32 @@ export async function getUserForms(userId: string): Promise<UserForms | null> {
     return null
   }
 }
+
+export async function getSingleFormById(formId: string): Promise<any> {
+  try {
+    const singleFormDetails = await prisma.form.findFirst({
+      where: {
+        id: formId
+      },
+      select: {
+        formTitle: true,
+        createdAt: true,
+        fields: {
+          select: {
+            label: true,
+            type: true,
+            options: {
+              select: {
+                value: true
+              }
+            }
+          }
+        }
+      }
+    })
+    return singleFormDetails
+  } catch (err) {
+    console.log(err)
+    return null
+  }
+}
