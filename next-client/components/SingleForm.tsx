@@ -1,101 +1,186 @@
 'use client'
-
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Check, AlertCircle } from 'lucide-react'
 
+// Type definitions for form structure
 interface FormField {
-  id: string
-  type: 'text' | 'multipleChoice' | 'checkbox' | 'date' | 'file'
   label: string
-  options?: string[]
+  type: 'text' | 'multipleChoice' | 'checkbox' | 'date' | 'file'
+  options?: {
+    value: string
+  }[]
   required?: boolean
 }
 
 interface FormData {
-  title: string
+  formTitle: string
+  createdAt: string | Date
   fields: FormField[]
 }
 
-// This would typically come from an API or database
-const formData: FormData = {
-  title: 'Customer Satisfaction Survey',
-  fields: [
-    { id: '1', type: 'text', label: "What's your name?", required: true },
-    {
-      id: '2',
-      type: 'multipleChoice',
-      label: 'How satisfied are you with our service?',
-      options: [
-        'Very Satisfied',
-        'Satisfied',
-        'Neutral',
-        'Dissatisfied',
-        'Very Dissatisfied'
-      ],
-      required: true
-    },
-    {
-      id: '3',
-      type: 'checkbox',
-      label: 'Which of our products have you used? (Select all that apply)',
-      options: ['Product A', 'Product B', 'Product C', 'Product D']
-    },
-    {
-      id: '4',
-      type: 'date',
-      label: 'When did you last use our service?',
-      required: true
-    },
-    {
-      id: '5',
-      type: 'text',
-      label: 'Any additional comments?',
-      required: false
-    },
-    {
-      id: '6',
-      type: 'file',
-      label: 'Upload any relevant documents (optional)',
-      required: false
-    }
-  ]
-}
+export default function DynamicForm({ formData }: { formData: FormData }) {
+  // Initialize responses with empty values based on field types
+  const initializeResponses = () => {
+    const initial: Record<string, any> = {}
+    formData.fields.forEach((field, index) => {
+      const fieldId = `field-${index}`
+      initial[fieldId] = field.type === 'checkbox' ? [] : ''
+    })
+    return initial
+  }
 
-export default function FormPage() {
-  const [formResponses, setFormResponses] = useState<
-    Record<string, string | string[]>
-  >({})
+  const [formResponses, setFormResponses] = useState(initializeResponses())
   const [submitted, setSubmitted] = useState(false)
   const [errors, setErrors] = useState<string[]>([])
 
-  const handleInputChange = (id: string, value: string | string[]) => {
-    setFormResponses(prev => ({ ...prev, [id]: value }))
+  const validateForm = () => {
+    const newErrors: string[] = []
+    formData.fields.forEach((field, index) => {
+      const fieldId = `field-${index}`
+      const response = formResponses[fieldId]
+
+      if (field.required) {
+        if (field.type === 'checkbox' && (!response || response.length === 0)) {
+          newErrors.push(`${field.label} is required`)
+        } else if (!response || response.length === 0) {
+          newErrors.push(`${field.label} is required`)
+        }
+      }
+    })
+    return newErrors
+  }
+
+  const handleInputChange = (fieldId: string, value: any) => {
+    setFormResponses(prev => ({ ...prev, [fieldId]: value }))
   }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    const newErrors: string[] = []
+    const formErrors = validateForm()
 
-    formData.fields.forEach(field => {
-      if (
-        field.required &&
-        (!formResponses[field.id] ||
-          (Array.isArray(formResponses[field.id]) &&
-            (formResponses[field.id] as string[]).length === 0))
-      ) {
-        newErrors.push(`${field.label} is required`)
-      }
-    })
-
-    if (newErrors.length > 0) {
-      setErrors(newErrors)
+    if (formErrors.length > 0) {
+      setErrors(formErrors)
       return
     }
 
-    // Here you would typically send the form data to a server
-    console.log('Form submitted:', formResponses)
+    const formattedResponses = formData.fields.reduce(
+      (acc, field, index) => {
+        const fieldId = `field-${index}`
+        acc[field.label] = formResponses[fieldId]
+        return acc
+      },
+      {} as Record<string, any>
+    )
+
+    console.log('Form submitted:', {
+      title: formData.formTitle,
+      submittedAt: new Date().toISOString(),
+      responses: formattedResponses
+    })
+
+    setErrors([])
     setSubmitted(true)
+  }
+
+  const renderField = (field: FormField, index: number) => {
+    const fieldId = `field-${index}`
+
+    switch (field.type) {
+      case 'text':
+        return (
+          <input
+            type='text'
+            value={formResponses[fieldId] || ''}
+            onChange={e => handleInputChange(fieldId, e.target.value)}
+            className='w-full rounded-md border border-gray-300 p-2 focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white'
+          />
+        )
+
+      case 'multipleChoice':
+        return (
+          <div className='space-y-2'>
+            {field.options?.map((option, optionIndex) => (
+              <div key={optionIndex} className='flex items-center'>
+                <input
+                  type='radio'
+                  id={`${fieldId}-${optionIndex}`}
+                  name={fieldId}
+                  value={option.value}
+                  checked={formResponses[fieldId] === option.value}
+                  onChange={e => handleInputChange(fieldId, e.target.value)}
+                  className='h-4 w-4 border-gray-300 text-teal-600 focus:ring-teal-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800'
+                />
+                <label
+                  htmlFor={`${fieldId}-${optionIndex}`}
+                  className='ml-2 text-gray-700 dark:text-gray-200'
+                >
+                  {option.value}
+                </label>
+              </div>
+            ))}
+          </div>
+        )
+
+      case 'checkbox':
+        return (
+          <div className='space-y-2'>
+            {field.options?.map((option, optionIndex) => (
+              <div key={optionIndex} className='flex items-center'>
+                <input
+                  type='checkbox'
+                  id={`${fieldId}-${optionIndex}`}
+                  value={option.value}
+                  checked={(formResponses[fieldId] || []).includes(
+                    option.value
+                  )}
+                  onChange={e => {
+                    const currentValues = formResponses[fieldId] || []
+                    const newValues = e.target.checked
+                      ? [...currentValues, option.value]
+                      : currentValues.filter((v: any) => v !== option.value)
+                    handleInputChange(fieldId, newValues)
+                  }}
+                  className='h-4 w-4 rounded border-gray-300 text-teal-600 focus:ring-teal-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800'
+                />
+                <label
+                  htmlFor={`${fieldId}-${optionIndex}`}
+                  className='ml-2 text-gray-700 dark:text-gray-200'
+                >
+                  {option.value}
+                </label>
+              </div>
+            ))}
+          </div>
+        )
+
+      case 'date':
+        return (
+          <input
+            type='date'
+            value={formResponses[fieldId] || ''}
+            onChange={e => handleInputChange(fieldId, e.target.value)}
+            className='w-full rounded-md border border-gray-300 p-2 focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white'
+          />
+        )
+
+      case 'file':
+        return (
+          <input
+            type='file'
+            onChange={e =>
+              handleInputChange(
+                fieldId,
+                e.target.files ? e.target.files[0].name : ''
+              )
+            }
+            className='w-full rounded-md border border-gray-300 p-2 text-gray-700 focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white'
+          />
+        )
+
+      default:
+        return null
+    }
   }
 
   return (
@@ -113,13 +198,13 @@ export default function FormPage() {
           className='mb-8 rounded-lg bg-white p-8 shadow-lg dark:bg-gray-800'
         >
           <h1 className='mb-4 text-3xl font-bold text-gray-800 dark:text-white'>
-            {formData.title}
+            {formData.formTitle}
           </h1>
           {!submitted ? (
             <form onSubmit={handleSubmit}>
               {formData.fields.map((field, index) => (
                 <motion.div
-                  key={field.id}
+                  key={index}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.1 * index }}
@@ -131,98 +216,10 @@ export default function FormPage() {
                       <span className='ml-1 text-red-500'>*</span>
                     )}
                   </label>
-                  {field.type === 'text' && (
-                    <input
-                      type='text'
-                      value={(formResponses[field.id] as string) || ''}
-                      onChange={e =>
-                        handleInputChange(field.id, e.target.value)
-                      }
-                      className='w-full rounded-md border border-gray-300 p-2 focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white'
-                    />
-                  )}
-                  {field.type === 'multipleChoice' && field.options && (
-                    <div className='space-y-2'>
-                      {field.options.map((option, optionIndex) => (
-                        <div key={optionIndex} className='flex items-center'>
-                          <input
-                            type='radio'
-                            id={`${field.id}-${optionIndex}`}
-                            name={field.id}
-                            value={option}
-                            checked={
-                              (formResponses[field.id] as string) === option
-                            }
-                            onChange={e =>
-                              handleInputChange(field.id, e.target.value)
-                            }
-                            className='h-4 w-4 border-gray-300 text-teal-600 focus:ring-teal-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800'
-                          />
-                          <label
-                            htmlFor={`${field.id}-${optionIndex}`}
-                            className='ml-2 text-gray-700 dark:text-gray-200'
-                          >
-                            {option}
-                          </label>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                  {field.type === 'checkbox' && field.options && (
-                    <div className='space-y-2'>
-                      {field.options.map((option, optionIndex) => (
-                        <div key={optionIndex} className='flex items-center'>
-                          <input
-                            type='checkbox'
-                            id={`${field.id}-${optionIndex}`}
-                            value={option}
-                            checked={(
-                              (formResponses[field.id] as string[]) || []
-                            ).includes(option)}
-                            onChange={e => {
-                              const currentValues =
-                                (formResponses[field.id] as string[]) || []
-                              const newValues = e.target.checked
-                                ? [...currentValues, option]
-                                : currentValues.filter(v => v !== option)
-                              handleInputChange(field.id, newValues)
-                            }}
-                            className='h-4 w-4 rounded border-gray-300 text-teal-600 focus:ring-teal-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800'
-                          />
-                          <label
-                            htmlFor={`${field.id}-${optionIndex}`}
-                            className='ml-2 text-gray-700 dark:text-gray-200'
-                          >
-                            {option}
-                          </label>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                  {field.type === 'date' && (
-                    <input
-                      type='date'
-                      value={(formResponses[field.id] as string) || ''}
-                      onChange={e =>
-                        handleInputChange(field.id, e.target.value)
-                      }
-                      className='w-full rounded-md border border-gray-300 p-2 focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white'
-                    />
-                  )}
-                  {field.type === 'file' && (
-                    <input
-                      type='file'
-                      onChange={e =>
-                        handleInputChange(
-                          field.id,
-                          e.target.files ? e.target.files[0].name : ''
-                        )
-                      }
-                      className='w-full rounded-md border border-gray-300 p-2 text-gray-700 focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white'
-                    />
-                  )}
+                  {renderField(field, index)}
                 </motion.div>
               ))}
+
               {errors.length > 0 && (
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
@@ -246,6 +243,7 @@ export default function FormPage() {
                   </div>
                 </motion.div>
               )}
+
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
